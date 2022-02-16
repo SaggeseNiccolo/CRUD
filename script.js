@@ -50,10 +50,10 @@ $(document).ready(displayTable());
 //https://www.geeksforgeeks.org/how-to-fetch-data-from-json-file-and-display-in-html-table-using-jquery/
 function displayTable() {
     var dipendente;
-    var btnElimina = "<button class='btn btn-danger'>Elimina</button>"
+    var btnElimina = "<button class='btn btn-danger elimina'>Elimina</button>"
 
-    $.each(data, function (id, value) {
-        dipendente += '<tr>';
+    $.each(data, function (i, value) {
+        dipendente += '<tr id="tr-' + i + '">';
         dipendente += '<th scope="row">' + value.id + '</th>';
         dipendente += '<td>' + value.firstName + '</td>';
         dipendente += '<td>' + value.lastName + '</td>';
@@ -62,3 +62,11 @@ function displayTable() {
     });
     $("tbody").append(dipendente);
 }
+
+$(".elimina").click(function () {
+    $(this).parents("tr").remove();
+});
+
+$("#aggiungi").click(function () {
+    
+});
