@@ -47,6 +47,7 @@ var nextId = 10006;
 //una volta che la pagina viene caricata, vengono inseriti gli elementi nella tabella
 $(document).ready(displayTable());
 
+//https://www.geeksforgeeks.org/how-to-fetch-data-from-json-file-and-display-in-html-table-using-jquery/
 function displayTable() {
     var dipendente;
     var btnElimina = "<button class='btn btn-danger'>Elimina</button>"
