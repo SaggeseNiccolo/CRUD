@@ -43,17 +43,21 @@ var data = [
     }
 ]
 var nextId = 10006;
+var btnElimina = "<button class='btn btn-danger elimina'>Elimina</button>"
 
 //una volta che la pagina viene caricata, vengono inseriti gli elementi nella tabella
-$(document).ready(displayTable());
+$(document).ready(
+    displayTable(),
+    aggiungi(),
+    elimina()
+);
 
 //https://www.geeksforgeeks.org/how-to-fetch-data-from-json-file-and-display-in-html-table-using-jquery/
 function displayTable() {
     var dipendente;
-    var btnElimina = "<button class='btn btn-danger elimina'>Elimina</button>"
 
     $.each(data, function (i, value) {
-        dipendente += '<tr id="tr-' + i + '">';
+        dipendente += '<tr>';
         dipendente += '<th scope="row">' + value.id + '</th>';
         dipendente += '<td>' + value.firstName + '</td>';
         dipendente += '<td>' + value.lastName + '</td>';
@@ -63,10 +67,29 @@ function displayTable() {
     $("tbody").append(dipendente);
 }
 
-$(".elimina").click(function () {
-    $(this).parents("tr").remove();
-});
+function aggiungi() {
+    $("#aggiungi").click(function () {
+        var dipendente;
+        var nome = $("#nome").val();
+        var cognome = $("#cognome").val();
 
-$("#aggiungi").click(function () {
-    
-});
+        dipendente += '<tr>';
+        dipendente += '<th scope="row">' + nextId + '</th>';
+        dipendente += '<td>' + nome + '</td>';
+        dipendente += '<td>' + cognome + '</td>';
+        dipendente += '<td>' + btnElimina + '</td>'
+        dipendente += '</tr>';
+
+        $("tbody").append(dipendente);
+
+        nextId++;
+
+        elimina();
+    });
+}
+
+function elimina() {
+    $(".elimina").click(function () {
+        $(this).parents("tr").fadeOut("fast");
+    });
+}

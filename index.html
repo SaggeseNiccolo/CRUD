@@ -11,9 +11,8 @@
 
 <body>
   <div class="container p-3">
-    <h1>Dipendenti</h1>
-    <button class="btn btn-primary float-end" data-bs-toggle="modal"
-      data-bs-target="#modal">Aggiungi</button>
+    <h1 class="d-inline">Dipendenti</h1>
+    <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#modal">Aggiungi</button>
 
     <div class="modal fade" id="modal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
@@ -27,13 +26,13 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Annulla</button>
-            <button type="button" class="btn btn-primary" id="aggiungi">Aggiungi</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="aggiungi">Aggiungi</button>
           </div>
         </div>
       </div>
     </div>
 
-    <table class="table">
+    <table class="table table-hover mt-5 text-center align-middle">
       <thead>
         <tr>
           <th scope="col">Id</th>
