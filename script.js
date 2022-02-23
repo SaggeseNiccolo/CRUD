@@ -42,13 +42,16 @@ var data = [
 
     }
 ]
+
 var nextId = 10006;
-var btnElimina = "<button class='btn btn-danger elimina'>Elimina</button>"
+var btnModifica = "<button class='btn btn-primary me-5 modifica' data-bs-toggle='modal' data-bs-target='#modal-modify'>Modifica</button>";
+var btnElimina = "<button class='btn btn-danger elimina'>Elimina</button>";
 
 //una volta che la pagina viene caricata, vengono inseriti gli elementi nella tabella
 $(document).ready(
     displayTable(),
     aggiungi(),
+    modifica(),
     elimina()
 );
 
@@ -56,15 +59,20 @@ $(document).ready(
 function displayTable() {
     var dipendente;
 
+    $("tbody").html("");
+
     $.each(data, function (i, value) {
         dipendente += '<tr>';
         dipendente += '<th scope="row">' + value.id + '</th>';
-        dipendente += '<td>' + value.firstName + '</td>';
-        dipendente += '<td>' + value.lastName + '</td>';
-        dipendente += '<td>' + btnElimina + '</td>';
+        dipendente += '<td id="col-nome">' + value.firstName + '</td>';
+        dipendente += '<td id="col-cognome">' + value.lastName + '</td>';
+        dipendente += '<td data-id=' + value.id + '>' + btnModifica + btnElimina + '</td>';
         dipendente += '</tr>';
     });
     $("tbody").append(dipendente);
+
+    modifica();
+    elimina();
 }
 
 function aggiungi() {
@@ -77,19 +85,35 @@ function aggiungi() {
         dipendente += '<th scope="row">' + nextId + '</th>';
         dipendente += '<td>' + nome + '</td>';
         dipendente += '<td>' + cognome + '</td>';
-        dipendente += '<td>' + btnElimina + '</td>'
+        dipendente += '<td>' + btnModifica + btnElimina + '</td>';
         dipendente += '</tr>';
 
         $("tbody").append(dipendente);
 
         nextId++;
 
+        modifica();
         elimina();
+    });
+}
+
+function modifica() {
+    $(".modifica").click(function () {
+        // console.log($(this).parent().html());
+        // $(#nome).html()
     });
 }
 
 function elimina() {
     $(".elimina").click(function () {
-        $(this).parents("tr").fadeOut("fast");
+        var id = $(this).parent().data("id");
+
+        for (var i = 0; i < data.length; i++) {
+            if (id == data[i].id) {
+                data.splice(i, 1);
+            }
+        }
+
+        displayTable();
     });
 }
