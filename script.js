@@ -43,6 +43,7 @@ var data = [
     }
 ]
 
+var id;
 var nextId = 10006;
 var btnModifica = "<button class='btn btn-primary me-5 modifica' data-bs-toggle='modal' data-bs-target='#modal-modify'>Modifica</button>";
 var btnElimina = "<button class='btn btn-danger elimina'>Elimina</button>";
@@ -50,12 +51,9 @@ var btnElimina = "<button class='btn btn-danger elimina'>Elimina</button>";
 //una volta che la pagina viene caricata, vengono inseriti gli elementi nella tabella
 $(document).ready(
     displayTable(),
-    aggiungi(),
-    modifica(),
     elimina()
 );
 
-//https://www.geeksforgeeks.org/how-to-fetch-data-from-json-file-and-display-in-html-table-using-jquery/
 function displayTable() {
     var dipendente;
 
@@ -64,48 +62,69 @@ function displayTable() {
     $.each(data, function (i, value) {
         dipendente += '<tr>';
         dipendente += '<th scope="row">' + value.id + '</th>';
-        dipendente += '<td id="col-nome">' + value.firstName + '</td>';
-        dipendente += '<td id="col-cognome">' + value.lastName + '</td>';
+        dipendente += '<td>' + value.firstName + '</td>';
+        dipendente += '<td>' + value.lastName + '</td>';
         dipendente += '<td data-id=' + value.id + '>' + btnModifica + btnElimina + '</td>';
         dipendente += '</tr>';
     });
     $("tbody").append(dipendente);
 
-    modifica();
-    elimina();
-}
+    $(".modifica").click(function () {
+        id = $(this).parent().data("id");
 
-function aggiungi() {
-    $("#aggiungi").click(function () {
-        var dipendente;
-        var nome = $("#nome").val();
-        var cognome = $("#cognome").val();
+        for (var i = 0; i < data.length; i++) {
+            if (id == data[i].id) {
+                $("#nome-m").val(data[i].firstName);
+                $("#cognome-m").val(data[i].lastName);
+            }
+        }
+    });
 
-        dipendente += '<tr>';
-        dipendente += '<th scope="row">' + nextId + '</th>';
-        dipendente += '<td>' + nome + '</td>';
-        dipendente += '<td>' + cognome + '</td>';
-        dipendente += '<td>' + btnModifica + btnElimina + '</td>';
-        dipendente += '</tr>';
+    $("#modifica").click(function () {
+        var nome = $("#nome-m").val();
+        var cognome = $("#cognome-m").val();
 
-        $("tbody").append(dipendente);
-
-        nextId++;
-
-        modifica();
+        for (var i = 0; i < data.length; i++) {
+            if (id == data[i].id) {
+                data[i].firstName = nome;
+                data[i].lastName = cognome;
+            }
+        }
+        displayTable();
         elimina();
     });
 }
 
-function modifica() {
-    $(".modifica").click(function () {
-        // console.log($(this).parent().html());
-        // $(#nome).html()
-    });
-}
+$("#aggiungi").click(function () {
+    var nome = $("#nome").val();
+    var cognome = $("#cognome").val();
+
+    $("#nome").val("");
+    $("#cognome").val("");
+
+    //creo un nuovo oggetto
+    var dipendente = {
+        "id": nextId,
+        "birthDate": "",
+        "firstName": nome,
+        "lastName": cognome,
+        "gender": "",
+        "hireDate": "",
+    }
+
+    //pusho il nuovo oggetto nell'array data
+    data.push(dipendente);
+
+    nextId++;
+
+    displayTable();
+    elimina();
+});
 
 function elimina() {
     $(".elimina").click(function () {
+        $(this).parents("tr").fadeOut("fast");
+
         var id = $(this).parent().data("id");
 
         for (var i = 0; i < data.length; i++) {
@@ -113,7 +132,5 @@ function elimina() {
                 data.splice(i, 1);
             }
         }
-
-        displayTable();
     });
 }
