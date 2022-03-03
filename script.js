@@ -4,7 +4,7 @@ var last;
 var prev;
 var next;
 var id;
-var nextId = 10006;
+var nextId = 499999;
 var btnModifica = "<button class='btn btn-primary ms-5 modifica' data-bs-toggle='modal' data-bs-target='#modal-modify'>Modifica</button>";
 var btnElimina = "<button class='btn btn-danger elimina'>Elimina</button>";
 
@@ -15,7 +15,7 @@ function nPage() {
         $("#prev").parent().addClass("disabled");
         $("#next").parent().removeClass("disabled");
         $("#last").parent().removeClass("disabled");
-    } else if (page == 30002){
+    } else if (page == 30002) {
         $("#first").parent().removeClass("disabled");
         $("#prev").parent().removeClass("disabled");
         $("#next").parent().addClass("disabled");
@@ -66,8 +66,8 @@ $("#next").click(function () {
         function (data) {
             displayTable(data['_embedded']['employees']);
             page = data["page"]["number"];
-            if(page < 30002)
-            next = data["_links"]["next"]["href"];
+            if (page < 30002)
+                next = data["_links"]["next"]["href"];
             prev = data["_links"]["prev"]["href"];
             nPage();
         },
@@ -127,16 +127,42 @@ $("#aggiungi").click(function () {
 
     //creo un nuovo oggetto
     var dipendente = {
-        "id": nextId,
         "birthDate": "",
         "firstName": nome,
-        "lastName": cognome,
         "gender": "",
         "hireDate": "",
+        "id": nextId,
+        "lastName": cognome,
+        "links": [
+            {
+                "href": "http://localhost:8080/employees/" + nextId,
+                "rel": "http://localhost:8080/employees/" + nextId,
+                "templated": true
+            }
+        ]
     }
 
+    //posto il nuovo dipendente al server
+    // $.post("http://localhost:8080/employees", dipendente,
+    //     function (result) {
+    //         console.log(result);
+    //     },
+    // );
+    // $.post("http://localhost:8080/employees", dipendente, function (dipendente, status) {
+    //     alert("Data: " + dipendente + "\nStatus: " + status);
+    // });
+    $.ajax({
+        type: "POST",
+        url: "http://localhost:8080/employees",
+        data: dipendente,
+        dataType: "json",
+        success: function (response) {
+            alert(response);
+        }
+    });
+
     //pusho il nuovo oggetto nell'array data
-    data.push(dipendente);
+    // data.push(dipendente);
 
     nextId++;
 
