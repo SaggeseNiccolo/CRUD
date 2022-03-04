@@ -51,8 +51,6 @@ $(document).ready(
 );
 
 function displayTable(data) {
-    console.log("displaio tuttoooooooooo");
-
     var dipendente;
 
     $("tbody").html("");
@@ -146,23 +144,6 @@ $("#aggiungi").click(function () {
     $("#nome").val("");
     $("#cognome").val("");
 
-    //creo un nuovo oggetto
-    var dipendente = {
-        "birthDate": "",
-        "firstName": nome,
-        "gender": "",
-        "hireDate": "",
-        "id": nextId,
-        "lastName": cognome,
-        "links": [
-            {
-                "href": "http://localhost:8080/employees/" + nextId,
-                "rel": "http://localhost:8080/employees/" + nextId,
-                "templated": true
-            }
-        ]
-    }
-
     //posto il nuovo dipendente al server
     $.ajax({
         type: 'POST',
@@ -176,8 +157,6 @@ $("#aggiungi").click(function () {
         }),
         success: function () {
             nextId++;
-            console.log("success: " + nome + " " + cognome + "\nnextId: " + nextId);
-            // setTimeout(displayTable(), 1000);
             $("#loading").removeClass("d-none");
             $("tbody").html("");
             $.get(last,
