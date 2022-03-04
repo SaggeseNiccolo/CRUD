@@ -1,10 +1,12 @@
 var page;
+var lastPage;
+var size = 20; //quanti elementi vedere per pagina
 var first;
 var last;
 var prev;
 var next;
 var id;
-var nextId = 499999;
+var nextId;
 var btnModifica = "<button class='btn btn-primary ms-5 modifica' data-bs-toggle='modal' data-bs-target='#modal-modify'>Modifica</button>";
 var btnElimina = "<button class='btn btn-danger elimina'>Elimina</button>";
 
@@ -15,7 +17,7 @@ function nPage() {
         $("#prev").parent().addClass("disabled");
         $("#next").parent().removeClass("disabled");
         $("#last").parent().removeClass("disabled");
-    } else if (page == 30002) {
+    } else if (page == lastPage) {
         $("#first").parent().removeClass("disabled");
         $("#prev").parent().removeClass("disabled");
         $("#next").parent().addClass("disabled");
@@ -30,9 +32,12 @@ function nPage() {
 
 //una volta che la pagina viene caricata, vengono inseriti gli elementi nella tabella
 $(document).ready(
-    $.get("http://localhost:8080/employees?size=10",
+    $.get("http://localhost:8080/employees?size=" + size,
         function (data) {
+            console.log(data);
             page = data["page"]["number"];
+            lastPage = data["page"]["totalPages"] - 1;
+            nextId = data["page"]["totalElements"] + 199976;
             next = data["_links"]["next"]["href"];
             if (page > 0) {
                 prev = data["_links"]["prev"]["href"];
@@ -46,6 +51,8 @@ $(document).ready(
 );
 
 function displayTable(data) {
+    console.log("displaio tuttoooooooooo");
+
     var dipendente;
 
     $("tbody").html("");
@@ -58,16 +65,24 @@ function displayTable(data) {
         dipendente += '<td data-id=' + value.id + '>' + btnElimina + btnModifica + '</td>';
         dipendente += '</tr>';
     });
+
+    $("#loading").addClass("d-none");
+
+    $("#pagination").removeClass("d-none");
+
     $("tbody").append(dipendente);
 }
 
 $("#next").click(function () {
+    $("#loading").removeClass("d-none");
+    $("tbody").html("");
     $.get(next,
         function (data) {
             displayTable(data['_embedded']['employees']);
             page = data["page"]["number"];
-            if (page < 30002)
+            if (page < lastPage) {
                 next = data["_links"]["next"]["href"];
+            }
             prev = data["_links"]["prev"]["href"];
             nPage();
         },
@@ -75,6 +90,8 @@ $("#next").click(function () {
 });
 
 $("#prev").click(function () {
+    $("#loading").removeClass("d-none");
+    $("tbody").html("");
     $.get(prev,
         function (data) {
             displayTable(data['_embedded']['employees']);
@@ -89,6 +106,8 @@ $("#prev").click(function () {
 });
 
 $("#first").click(function () {
+    $("#loading").removeClass("d-none");
+    $("tbody").html("");
     $.get(first,
         function (data) {
             displayTable(data['_embedded']['employees']);
@@ -104,6 +123,8 @@ $("#first").click(function () {
 });
 
 $("#last").click(function () {
+    $("#loading").removeClass("d-none");
+    $("tbody").html("");
     $.get(last,
         function (data) {
             displayTable(data['_embedded']['employees']);
@@ -143,30 +164,38 @@ $("#aggiungi").click(function () {
     }
 
     //posto il nuovo dipendente al server
-    // $.post("http://localhost:8080/employees", dipendente,
-    //     function (result) {
-    //         console.log(result);
-    //     },
-    // );
-    // $.post("http://localhost:8080/employees", dipendente, function (dipendente, status) {
-    //     alert("Data: " + dipendente + "\nStatus: " + status);
-    // });
     $.ajax({
-        type: "POST",
-        url: "http://localhost:8080/employees",
-        data: dipendente,
-        dataType: "json",
-        success: function (response) {
-            alert(response);
-        }
+        type: 'POST',
+        url: 'http://localhost:8080/employees',
+        data: JSON.stringify({
+            birthDate: "",
+            firstName: nome,
+            lastName: cognome,
+            gender: "M",
+            hireDate: ""
+        }),
+        success: function () {
+            nextId++;
+            console.log("success: " + nome + " " + cognome + "\nnextId: " + nextId);
+            // setTimeout(displayTable(), 1000);
+            $("#loading").removeClass("d-none");
+            $("tbody").html("");
+            $.get(last,
+                function (data) {
+                    displayTable(data['_embedded']['employees']);
+                    page = data["page"]["number"];
+                    prev = data["_links"]["prev"]["href"];
+                    nPage();
+                    $("#first").parent().removeClass("disabled");
+                    $("#prev").parent().removeClass("disabled");
+                    $("#next").parent().addClass("disabled");
+                    $("#last").parent().addClass("disabled");
+                },
+            );
+        },
+        contentType: "application/json",
+        dataType: 'json'
     });
-
-    //pusho il nuovo oggetto nell'array data
-    // data.push(dipendente);
-
-    nextId++;
-
-    displayTable();
 });
 
 $("#modifica").click(function () {
