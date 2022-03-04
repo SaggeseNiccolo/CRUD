@@ -69,6 +69,32 @@ function displayTable(data) {
     $("#pagination").removeClass("d-none");
 
     $("tbody").append(dipendente);
+
+    $(".elimina").click(function () {
+        var idd = $(this).parent().data("id");
+        console.log("ti elimino " + idd);
+
+        $.ajax({
+            type: "DELETE",
+            url: "http://localhost:8080/employees?page=" + page,
+            data: JSON.stringify({
+                id: idd
+            }),
+            dataType: "json",
+            success: function () {
+                $("#loading").removeClass("d-none");
+                $("tbody").html("");
+                $.get("http://localhost:8080/employees?page=" + page,
+                    function (data) {
+                        displayTable(data['_embedded']['employees']);
+                        page = data["page"]["number"];
+                        prev = data["_links"]["prev"]["href"];
+                        nPage();
+                    },
+                );
+            }
+        });
+    });
 }
 
 $("#next").click(function () {
@@ -197,18 +223,6 @@ $(".modifica").click(function () {
         if (id == data[i].id) {
             $("#nome-m").val(data[i].firstName);
             $("#cognome-m").val(data[i].lastName);
-        }
-    }
-});
-
-$(".elimina").click(function () {
-    $(this).parents("tr").fadeOut("fast");
-
-    var id = $(this).parent().data("id");
-
-    for (var i = 0; i < data.length; i++) {
-        if (id == data[i].id) {
-            data.splice(i, 1);
         }
     }
 });
