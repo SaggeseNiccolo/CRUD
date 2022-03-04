@@ -82,11 +82,19 @@ function displayTable(data) {
                 $("tbody").html("");
                 $.get("http://localhost:8080/employees?page=" + page,
                     function (data) {
+                        lastPage = data["page"]["totalPages"] - 1;
                         displayTable(data['_embedded']['employees']);
                     },
                 );
             }
         });
+    });
+
+    $(".modifica").click(function () {
+        id = $(this).parent().data("id");
+
+        $("#nome-m").val($(this).parent().siblings("#first-name").html());
+        $("#cognome-m").val($(this).parent().siblings("#last-name").html());
     });
 }
 
@@ -200,22 +208,42 @@ $("#modifica").click(function () {
     var nome = $("#nome-m").val();
     var cognome = $("#cognome-m").val();
 
-    for (var i = 0; i < data.length; i++) {
-        if (id == data[i].id) {
-            data[i].firstName = nome;
-            data[i].lastName = cognome;
+    $.ajax({
+        type: "PATCH",
+        url: "http://localhost:8080/employees/" + id,
+        data: JSON.stringify({
+            firstName: nome,
+            lastName: cognome
+        }),
+        dataType: "json",
+        contentType: "application/json",
+        success: function () {
+            $("#loading").removeClass("d-none");
+            $("tbody").html("");
+            $.get("http://localhost:8080/employees?page=" + page,
+                function (data) {
+                    displayTable(data['_embedded']['employees']);
+                },
+            );
         }
-    }
-    displayTable();
-});
+    });
 
-$(".modifica").click(function () {
-    id = $(this).parent().data("id");
+    $(".elimina").click(function () {
+        var id = $(this).parent().data("id");
 
-    for (var i = 0; i < data.length; i++) {
-        if (id == data[i].id) {
-            $("#nome-m").val(data[i].firstName);
-            $("#cognome-m").val(data[i].lastName);
-        }
-    }
+        $.ajax({
+            type: "DELETE",
+            url: "http://localhost:8080/employees/" + id,
+            dataType: "json",
+            success: function () {
+                $("#loading").removeClass("d-none");
+                $("tbody").html("");
+                $.get("http://localhost:8080/employees?page=" + page,
+                    function (data) {
+                        displayTable(data['_embedded']['employees']);
+                    },
+                );
+            }
+        });
+    });
 });
