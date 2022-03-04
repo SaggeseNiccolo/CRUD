@@ -58,8 +58,8 @@ function displayTable(data) {
     $.each(data, function (i, value) {
         dipendente += '<tr>';
         dipendente += '<th scope="row">' + value.id + '</th>';
-        dipendente += '<td>' + value.firstName + '</td>';
-        dipendente += '<td>' + value.lastName + '</td>';
+        dipendente += '<td id="first-name">' + value.firstName + '</td>';
+        dipendente += '<td id="last-name">' + value.lastName + '</td>';
         dipendente += '<td data-id=' + value.id + '>' + btnElimina + btnModifica + '</td>';
         dipendente += '</tr>';
     });
@@ -71,15 +71,11 @@ function displayTable(data) {
     $("tbody").append(dipendente);
 
     $(".elimina").click(function () {
-        var idd = $(this).parent().data("id");
-        console.log("ti elimino " + idd);
+        var id = $(this).parent().data("id");
 
         $.ajax({
             type: "DELETE",
-            url: "http://localhost:8080/employees?page=" + page,
-            data: JSON.stringify({
-                id: idd
-            }),
+            url: "http://localhost:8080/employees/" + id,
             dataType: "json",
             success: function () {
                 $("#loading").removeClass("d-none");
@@ -87,9 +83,6 @@ function displayTable(data) {
                 $.get("http://localhost:8080/employees?page=" + page,
                     function (data) {
                         displayTable(data['_embedded']['employees']);
-                        page = data["page"]["number"];
-                        prev = data["_links"]["prev"]["href"];
-                        nPage();
                     },
                 );
             }
