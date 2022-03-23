@@ -11,7 +11,7 @@ var btnModifica = "<button class='btn btn-primary ms-5 modifica' data-bs-toggle=
 var btnElimina = "<button class='btn btn-danger elimina'>Elimina</button>";
 
 function nPage() {
-    $("#current-page").html(page);
+    $("#current-page").html(page + 1);
     if (page == 0) {
         $("#first").parent().addClass("disabled");
         $("#prev").parent().addClass("disabled");
