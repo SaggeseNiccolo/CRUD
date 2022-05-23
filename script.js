@@ -32,7 +32,7 @@ function nPage() {
 
 //una volta che la pagina viene caricata, vengono inseriti gli elementi nella tabella
 $(document).ready(
-    $.get("http://localhost:8080/employees?size=" + size,
+    $.get("http://localhost:8080/index.php?size=" + size,
         function (data) {
             console.log(data);
             page = data["page"]["number"];
@@ -75,12 +75,12 @@ function displayTable(data) {
 
         $.ajax({
             type: "DELETE",
-            url: "http://localhost:8080/employees/" + id,
+            url: "http://localhost:8080/index.php/" + id,
             dataType: "json",
             success: function () {
                 $("#loading").removeClass("d-none");
                 $("tbody").html("");
-                $.get("http://localhost:8080/employees?page=" + page,
+                $.get("http://localhost:8080/index.php?page=" + page,
                     function (data) {
                         lastPage = data["page"]["totalPages"] - 1;
                         displayTable(data['_embedded']['employees']);
@@ -174,7 +174,7 @@ $("#aggiungi").click(function () {
     //posto il nuovo dipendente al server
     $.ajax({
         type: 'POST',
-        url: 'http://localhost:8080/employees',
+        url: 'http://localhost:8080/index.php',
         data: JSON.stringify({
             birthDate: "",
             firstName: nome,
@@ -210,7 +210,7 @@ $("#modifica").click(function () {
 
     $.ajax({
         type: "PATCH",
-        url: "http://localhost:8080/employees/" + id,
+        url: "http://localhost:8080/index.php/" + id,
         data: JSON.stringify({
             firstName: nome,
             lastName: cognome
@@ -220,7 +220,7 @@ $("#modifica").click(function () {
         success: function () {
             $("#loading").removeClass("d-none");
             $("tbody").html("");
-            $.get("http://localhost:8080/employees?page=" + page,
+            $.get("http://localhost:8080/index.php?page=" + page,
                 function (data) {
                     displayTable(data['_embedded']['employees']);
                 },
@@ -233,12 +233,12 @@ $("#modifica").click(function () {
 
         $.ajax({
             type: "DELETE",
-            url: "http://localhost:8080/employees/" + id,
+            url: "http://localhost:8080/index.php/" + id,
             dataType: "json",
             success: function () {
                 $("#loading").removeClass("d-none");
                 $("tbody").html("");
-                $.get("http://localhost:8080/employees?page=" + page,
+                $.get("http://localhost:8080/index.php?page=" + page,
                     function (data) {
                         displayTable(data['_embedded']['employees']);
                     },
